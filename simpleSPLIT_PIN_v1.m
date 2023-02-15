@@ -2,8 +2,8 @@
 function []=simpleSPLIT_PIN_v1(~);
 
 % User-fiendly code based on the following articles:
-%  ...
-%
+% D'Amico, Di Franco, Cerutti et al, A phasor-based approach to improve optical sectioning in any confocal microscope with a tunable pinhole. Microsc Res Tech 2022 
+% Di Franco et al, SPLIT-PIN software enabling confocal and super-resolution imaging with a virtually closed pinhole.  Scientific Reports 2023
 
 % Short description:
 % The code opens a stack of N frames acquired at tunable (decreasing) pinhole size
@@ -223,6 +223,12 @@ delete outputFileName
 % imwrite(Aout, outputFileName);
 imwrite(Aoutscaled, outputFileName);
 
+% export 16-bit tiff modulation scaled x1000 (for shared version)
+modscaled=uint16( B.*mod_ns * 1000 ) ;
+outputFileName2 = [filenameout, '_mod_x1000.tiff'];
+delete outputFileName2
+imwrite(modscaled, outputFileName2);
+
 % % export images SPLIT in, SPLIT out, selected frames sum
 % (requires OMEX library)
 % fnameout = [filenameout, '.obf'];
@@ -240,7 +246,7 @@ imwrite(Aoutscaled, outputFileName);
 % omas_bf_write(hf,res);
 % omas_bf_close(hf);
 
-% % export   elongation, mod 
+% export   elongation, mod 
 % filenameout=filenamefull(1:end) ;
 % fnameout = [filenameout, '_2Fmod.obf'];
 % res = { B'.*mod_ns'  mod_ns' };    % save images to imspector format
@@ -325,7 +331,7 @@ title('modulation mask')
 end
 
 function [mod_ns, mod, Mmin, maxmod]=simpleSPLIT_calc_mod(A,Tg,Thrg,sm,smr, imagetoplot)
-% outputs: mod_ns is the elongation; modimg and phase1 are the modulation and phase of the represented phasor. 
+% outputs: mod_ns is the modulation; modimg and phase1 are the modulation and phase of the represented phasor. 
 % T=1;
 A=double(A);
 dimimg=size(A);
